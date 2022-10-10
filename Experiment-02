@@ -1,0 +1,107 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node {
+    int info;
+    struct node* next;
+};
+
+struct node* create_list(struct node* start);
+struct node* add_at_beg(struct node* start,int data);
+struct node* add_at_end(struct node* start,int data);
+struct node* display(struct node* start);
+
+int main(){
+    struct node* start=NULL;
+    int choice;
+    
+    while(1){
+        
+        printf("\n******Choose Operation******\n");
+        printf("\t 1.Create List\n");
+        printf("\t 2.Display lit\n");
+        printf("\t 3.Insert at begining\n");
+        printf("\t 4.Insert after/before\n");
+        printf("\t 5.Insert at the end\n");
+        printf("\t 6.Delete first element\n");
+        printf("\t 7.Delete elements after/before\n");
+        printf("\t 8.Delete end element\n");
+        printf("\t 9.Is List Full ?\n");
+        printf("\t10.Is List Empty ?\n");
+        printf("\t11.Exit\n");
+        
+        printf("\n");
+        printf("\n");
+        
+        printf("Enter your choice : ");
+        scanf("%d",&choice);
+        
+        switch(choice){
+            
+            case 1: start=create_list(start);
+                    break;
+                    
+            case 2: display(start);
+                    break;
+            case 11: exit(1);
+                    
+        }
+    }
+}
+
+struct node* create_list(struct node* start){
+    int i,n,data;
+    printf("Enter no. of nodes : ");
+    scanf("%d",&n);
+    start=NULL;
+    
+    if(n==0){
+        return start;
+    }
+    
+     printf("Enter elements to be inserted : ");
+     scanf("%d",&data);
+     
+     start=add_at_beg(start,data);
+     
+     for(i=2;i<=n;i++){
+         scanf("%d",&data);
+         start=add_at_end(start,data);
+     }
+    return start;
+}
+
+struct node* add_at_beg(struct node* start,int data){ 
+    struct node* temp;
+    temp=(struct node *)malloc(sizeof(struct node));
+    temp->info=data;
+    temp->next=start;
+    start=temp;
+    return start;
+}
+
+struct node* add_at_end(struct node* start,int data){
+    struct node* temp;
+    struct node* ptr=start;
+    temp=(struct node*)malloc(sizeof(struct node));
+    temp->info=data;
+    
+    while(ptr->next!=NULL){
+        ptr=ptr->next;
+    }
+    
+    ptr->next=temp;
+    temp->next=NULL;
+    
+    return start;
+    
+}
+
+struct node* display(struct node* start){
+    struct node* ptr=start;
+    printf("\nElements :");
+    while(ptr->next!=NULL){
+        printf(" %d ",ptr->info);
+        ptr=ptr->next;
+    }
+}
