@@ -1,67 +1,135 @@
-// Program to add two polynomials represented
-// in linkedlist using recursion
-#include<iostream>
-using namespace std;
-
-class Node{
-public:
-int coeff,power;
-Node *next;
-Node(int coeff, int power){
-	this->coeff = coeff;
-	this->power = power;
-	this->next = NULL;
-}
-};
-
-void addPolynomials(Node *head1, Node *head2){
-
-if(head1==NULL && head2==NULL)
-	return;
-else if(head1->power == head2->power){
-	cout<<" "<<head1->coeff + head2->coeff<<"x^"<<head1->power<<" ";
-	addPolynomials(head1->next,head2->next);
-}
-else if(head1->power > head2->power){
-	cout<<" "<<head1->coeff<<"x^"<<head1->power<<" ";
-	addPolynomials(head1->next,head2);
-}
-else{
-	cout<<" "<<head2->coeff<<"x^"<<head2->power<<" ";
-	addPolynomials(head1,head2->next);
-}
-}
-
-void insert(Node *head, int coeff, int power){
-Node *new_node = new Node(coeff,power);
-while(head->next!=NULL){
-	head = head->next;
-}
-head->next = new_node;
-}
-
-void printList(Node *head){
-cout<<"Linked List"<<endl;
-while(head!=NULL){
-	cout<<" "<<head->coeff<<"x"<<"^"<<head->power;
-	head = head->next;
-}
-}
-
-int main(){
-
-Node *head=new Node(5,2);
-insert(head,4,1);
-Node *head2 = new Node(6,2);
-insert(head2,4,1);
-printList(head);
-cout<<endl;
-printList(head2);
-cout<<endl<<"Addition:"<<endl;
-addPolynomials(head,head2);
-
-
-return 0;
-}
-
-//This code is contributed by Akshita Patel
+#include<stdio.h> 
+#include<stdlib.h> 
+ struct Term 
+ { 
+     int coeff; 
+     int exp; 
+ }; 
+  
+ struct Poly 
+ { 
+     int n; 
+     struct Term *terms; 
+ }; 
+  
+ void create (struct Poly *p) 
+ { 
+     int i; 
+  
+     printf ("Enter Number of terms: "); 
+     scanf ("%d", &p->n); 
+  
+     p->terms = (struct Term *) malloc (p->n * sizeof (struct Term)); 
+  
+     printf ("Enter terms:\n"); 
+     for (i = 0; i < p->n; i++) 
+         scanf ("%d%d", &p->terms[i].coeff, &p->terms[i].exp); 
+     printf ("\n"); 
+ } 
+  
+ void display (struct Poly p) 
+ { 
+     int i; 
+     for (i = 0; i < p.n; i++) 
+     { 
+         printf ("%dx^%d", p.terms[i].coeff, p.terms[i].exp); 
+         if (i + 1 < p.n) 
+          printf (" + "); 
+     } 
+     printf ("\n"); 
+ } 
+  
+ struct Poly *add (struct Poly *p1, struct Poly *p2) 
+ { 
+     int i, j, k; 
+     struct Poly *sum; 
+  
+     sum = (struct Poly *) malloc (sizeof (struct Poly)); 
+     sum->terms = (struct Term *) malloc ((p1->n + p2->n) * sizeof (struct Term)); 
+  
+     i = j = k = 0; 
+  
+     while (i < p1->n && j < p2->n) 
+     { 
+         if (p1->terms[i].exp > p2->terms[j].exp) 
+          sum->terms[k++] = p1->terms[i++]; 
+         else if (p1->terms[i].exp < p2->terms[j].exp) 
+          sum->terms[k++] = p2->terms[j++]; 
+         else 
+      { 
+          sum->terms[k].exp = p1->terms[i].exp; 
+          sum->terms[k++].coeff = p1->terms[i++].coeff + p2->terms[j++].coeff; 
+      } 
+     } 
+  
+     for (; i < p1->n; i++) 
+         sum->terms[k++] = p1->terms[i]; 
+     for (; j < p2->n; j++) 
+         sum->terms[k++] = p2->terms[j]; 
+  
+     sum->n = k; 
+     return sum; 
+ } 
+  
+ struct Poly *sub (struct Poly *p1, struct Poly *p2) 
+ { 
+     int i, j, k; 
+     struct Poly *sub; 
+  
+     sub = (struct Poly *) malloc (sizeof (struct Poly)); 
+     sub->terms = (struct Term *) malloc ((p1->n - p2->n) * sizeof (struct Term)); 
+  
+     i = j = k = 0; 
+  
+     while (i < p1->n && j < p2->n) 
+     { 
+         if (p1->terms[i].exp > p2->terms[j].exp) 
+          sub->terms[k++] = p1->terms[i++]; 
+         else if (p1->terms[i].exp < p2->terms[j].exp) 
+          sub->terms[k++] = p2->terms[j++]; 
+         else 
+      { 
+          sub->terms[k].exp = p1->terms[i].exp; 
+          sub->terms[k++].coeff = p1->terms[i++].coeff - p2->terms[j++].coeff; 
+      } 
+     } 
+  
+     for (; i < p1->n; i++) 
+         sub->terms[k++] = p1->terms[i]; 
+     for (; j < p2->n; j++) 
+         sub->terms[k++] = p2->terms[j]; 
+  
+     sub->n = k; 
+     return sub; 
+ } 
+  
+  
+ int main() 
+ { 
+     struct Poly p1, p2, *p3,*p4; 
+  
+     printf ("Enter Polynomial 1:\n"); 
+     create (&p1); 
+     printf ("Enter Polynomial 2:\n"); 
+     create (&p2); 
+  
+     p3 = add (&p1, &p2); 
+     p4 = sub (&p1, &p2); 
+     printf ("\n"); 
+  
+     printf ("Polynomial 1 is: "); 
+     display (p1); 
+     printf ("\n"); 
+  
+     printf ("Polynomial 2 is: "); 
+     display (p2); 
+     printf ("\n"); 
+  
+     printf ("Addition is: "); 
+     display (*p3); 
+      
+     printf ("\nSubtraction is: "); 
+     display (*p4); 
+  
+     return 0; 
+ }
